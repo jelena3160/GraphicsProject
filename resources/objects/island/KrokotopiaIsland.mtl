@@ -4,12 +4,16 @@ Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ks 0.5 0.5 0.5
-map_Kd Sand.png
+map_Kd grass03.jpg
+map_Ks grass03_s.jpg
+map_bump grass03_n.jpg
 Ni 1.00
 newmtl lambert3SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd SandCliff.png
+map_Kd rock.jpg
+map_Ks rock_s.jpg
+map_bump rock_n.jpg
 Ni 1.00
