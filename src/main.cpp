@@ -94,6 +94,8 @@ int main()
     // -------------------------
     Shader campfireShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
     Shader islandShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
+    Shader cottageShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
+
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
 
     float skyboxVertices[] = {
@@ -168,10 +170,12 @@ int main()
     // -----------
     Model campfireModel(FileSystem::getPath("resources/objects/campfire/Campfire.obj"));
     Model islandModel(FileSystem::getPath("resources/objects/island/KrokotopiaIsland.obj"));
+    Model cottageModel(FileSystem::getPath("resources/objects/cottage/cabin.obj"));
+
 
     campfireModel.SetShaderTextureNamePrefix("material.");
     islandModel.SetShaderTextureNamePrefix("material.");
-    
+    cottageModel.SetShaderTextureNamePrefix("material.");
 
     PointLight pointLight;
     pointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
@@ -180,7 +184,7 @@ int main()
     pointLight.constant = 1.0f;
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
-    pointLight.position = glm::vec3(0.0, 0.0, 0.0);
+    pointLight.position = glm::vec3(0.0, 4.0, 0.0);
 
     for (auto& textures : campfireModel.textures_loaded) {
         LOG(std::cerr) << textures.path << ' ' << textures.type << '\n';
@@ -238,24 +242,41 @@ int main()
         islandShader.setVec3("viewPosition", camera.Position);
         islandShader.setFloat("material.shininess", 64.0f);
         // view/projection transformations
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        view = camera.GetViewMatrix();
         islandShader.setMat4("projection", projection);
         islandShader.setMat4("view", view);
+
+        cottageShader.setVec3("pointLight.position", pointLight.position);
+        cottageShader.setVec3("pointLight.ambient", pointLight.ambient);
+        cottageShader.setVec3("pointLight.diffuse", pointLight.diffuse);
+        cottageShader.setVec3("pointLight.specular", pointLight.specular);
+        cottageShader.setFloat("pointLight.constant", pointLight.constant);
+        cottageShader.setFloat("pointLight.linear", pointLight.linear);
+        cottageShader.setFloat("pointLight.quadratic", pointLight.quadratic);
+        cottageShader.setVec3("viewPosition", camera.Position);
+        cottageShader.setFloat("material.shininess", 64.0f);
+        cottageShader.setMat4("projection", projection);
+        cottageShader.setMat4("view", view);
 
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+        model = glm::translate(model, glm::vec3(0.0f, -4.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.5f));
+        islandShader.setMat4("model", model);
+        islandModel.Draw(islandShader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-3.0f, -0.3f, -2.0f));
         campfireShader.setMat4("model", model);
         campfireModel.Draw(campfireShader);
 
+
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.4f));
-        islandShader.setMat4("model", model);
-        islandModel.Draw(islandShader);
+        model = glm::translate(model, glm::vec3(4.0f, -0.3f, 1.0f));
+        model = glm::scale(model, glm::vec3(0.9f));
+        model = glm::rotate(model, glm::radians(-100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        cottageShader.setMat4("model", model);
+        cottageModel.Draw(cottageShader);
 
 
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

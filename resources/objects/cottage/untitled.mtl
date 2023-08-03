@@ -1,0 +1,27 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Cabin
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.344220 0.229388
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ke Cabin_Emissive.png
+map_Pm Cabin_Metallic.png
+map_Pr Cabin_Roughness.png
+map_bump Cabin_Normal_DirectX.png
+map_Kd Cabin_Base_Color.png
+
+newmtl Material
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
