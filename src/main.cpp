@@ -96,6 +96,8 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     // build and compile shaders
     // -------------------------
@@ -284,12 +286,14 @@ int main()
         shader.setMat4("model", model);
         campfireModel.Draw(shader);
 
+        glDisable(GL_CULL_FACE);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(4.0f, -0.3f, 1.0f));
         model = glm::scale(model, glm::vec3(0.9f));
         model = glm::rotate(model, glm::radians(-100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setMat4("model", model);
         cottageModel.Draw(shader);
+        glEnable(GL_CULL_FACE);
 
         for (unsigned int i = 0; i < amount; i++)
         {
