@@ -191,7 +191,6 @@ int main()
     srand(glfwGetTime());
     std::vector<float> xs = {3.2,-5.1, -5.7, -0.1, 1.5};
     std::vector<float> zs = {-4.4, -3.7, -2.3, -5.5, -5};
-    std::vector<float> ss = {0.5f, 0.4f, 0.3, 0.2, 0.1};
     for(unsigned int i = 0; i < amount; i++)
     {
         glm::mat4 model = glm::mat4(1.0f);
@@ -206,17 +205,17 @@ int main()
     PointLight pointLight;
     pointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
     pointLight.diffuse = glm::vec3(0.6, 0.5, 0.6);
-    pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
+    pointLight.specular = glm::vec3(0.5, 0.5, 0.5);
     pointLight.constant = 1.0f;
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
-    pointLight.position = glm::vec3(7.0, 12.0, 0.0);
+    pointLight.position = glm::vec3(12.2, 2.0, 0.0);
 
     DirLight dirLight;
     dirLight.ambient = glm::vec3(0.1f);
     dirLight.diffuse = glm::vec3(0.5f);
     dirLight.specular = glm::vec3(0.2f);
-    dirLight.direction = normalize(glm::vec3(5.3, -0.7, 0.5));
+    dirLight.direction = normalize(glm::vec3(5.3, -0.7, -0.5));
 /*    for (auto& textures : campfireModel.textures_loaded) {
         LOG(std::cerr) << textures.path << ' ' << textures.type << '\n';
     }
@@ -267,6 +266,10 @@ int main()
         shader.setVec3("dirLight.ambient", dirLight.ambient);
         shader.setVec3("dirLight.diffuse", dirLight.diffuse);
         shader.setVec3("dirLight.specular", dirLight.specular);
+        shader.setVec3("spotLight.position", camera.Position);
+        shader.setVec3("spotLight.direction", camera.Front);
+
+
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();

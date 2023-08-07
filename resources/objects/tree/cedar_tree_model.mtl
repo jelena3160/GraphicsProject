@@ -11,7 +11,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd cedar_01_bark_diffuse.png
-
 newmtl cedar_01_branch
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
