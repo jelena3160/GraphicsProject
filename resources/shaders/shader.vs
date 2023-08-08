@@ -37,8 +37,8 @@ void main()
        vec3 N = normalize(normalMatrix * aNormal);
        T = normalize(T - dot(T, N) * N);
        vec3 B = cross(N, T);
-
        mat3 TBN = transpose(mat3(T, B, N));
+
        vs_out.TangentLightPosPoint = TBN * lightPosPoint;
        vs_out.TangentLightPosSpot = TBN * lightPosSpot;
        vs_out.TangentLightDir = TBN * lightDir;
