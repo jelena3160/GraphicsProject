@@ -39,12 +39,12 @@ void main()
        vec3 B = cross(N, T);
        mat3 TBN = transpose(mat3(T, B, N));
 
-       vs_out.TangentLightPosPoint = TBN * lightPosPoint;
-       vs_out.TangentLightPosSpot = TBN * lightPosSpot;
-       vs_out.TangentLightDir = TBN * lightDir;
-       vs_out.TangentLightDirSpot = TBN * lightDirSpot;
-       vs_out.TangentViewPos  = TBN * viewPos;
-       vs_out.TangentFragPos  = TBN * vs_out.FragPos;
+       vs_out.TangentLightPosPoint = normalize(TBN * lightPosPoint);
+       vs_out.TangentLightPosSpot = normalize(TBN * lightPosSpot);
+       vs_out.TangentLightDir = normalize(TBN * lightDir);
+       vs_out.TangentLightDirSpot = normalize(TBN * lightDirSpot);
+       vs_out.TangentViewPos  = normalize(TBN * viewPos);
+       vs_out.TangentFragPos  = normalize(TBN * vs_out.FragPos);
 
        gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

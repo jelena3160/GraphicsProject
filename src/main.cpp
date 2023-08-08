@@ -214,19 +214,19 @@ int main()
     }
     // set light
     PointLight pointLight;
-    pointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
-    pointLight.diffuse = glm::vec3(0.6, 0.5, 0.6);
-    pointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    pointLight.ambient = glm::vec3(0.1f);
+    pointLight.diffuse = glm::vec3(0.6f);
+    pointLight.specular = glm::vec3(0.3f);
     pointLight.constant = 1.0f;
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
-    pointLight.position = glm::vec3(0.2, 2.0, 0.0);
+    pointLight.position = glm::vec3(-3.2f, 0.0f, -1.6f);
 
     DirLight dirLight;
-    dirLight.ambient = glm::vec3(0.1f);
-    dirLight.diffuse = glm::vec3(0.5f);
-    dirLight.specular = glm::vec3(0.2f);
-    dirLight.direction = normalize(glm::vec3(5.3, -0.7, -0.5));
+    dirLight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+    dirLight.diffuse = glm::vec3(0.3f);
+    dirLight.specular = glm::vec3(0.3f);
+    dirLight.direction = glm::vec3(4.2f, -5.0f, -3.3f);
 
     SpotLight spotLight;
     spotLight.position = camera.Position;
@@ -237,8 +237,8 @@ int main()
     spotLight.constant = 1.0f;
     spotLight.linear = 0.09;
     spotLight.quadratic = 0.032;
-    spotLight.cutOff = glm::cos(glm::radians(15.5f));
-    spotLight.outerCutOff = glm::cos(glm::radians(23.0f));
+    spotLight.cutOff = glm::cos(glm::radians(12.5f));
+    spotLight.outerCutOff = glm::cos(glm::radians(15.0f));
 
     // render loop
     // -----------
