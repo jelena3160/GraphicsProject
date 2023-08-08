@@ -107,7 +107,7 @@ private:
         loadTextureMaterial(material, aiTextureType_SPECULAR, "texture_specular",
                                                                 textures);
 
-        loadTextureMaterial(material, aiTextureType_NORMALS, "texture_normal", textures);
+        loadTextureMaterial(material, aiTextureType_HEIGHT, "texture_normal", textures);
 
         loadTextureMaterial(material, aiTextureType_HEIGHT, "texture_height",
                                                               textures);

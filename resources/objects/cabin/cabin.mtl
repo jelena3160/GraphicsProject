@@ -10,7 +10,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Ke Cabin_Emissive.png
 map_Pm Cabin_Metallic.png
 map_Pr Cabin_Roughness.png
 map_bump Cabin_Normal_DirectX.png

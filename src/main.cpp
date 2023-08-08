@@ -52,6 +52,21 @@ struct DirLight {
     glm::vec3 specular;
 };
 
+struct SpotLight {
+    glm::vec3 position;
+    glm::vec3 direction;
+    float cutOff;
+    float outerCutOff;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
+
 int main()
 {
     // glfw: initialize and configure
@@ -89,9 +104,7 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-   //stbi_set_flip_vertically_on_load(true);
+    
 
     // configure global opengl state
     // -----------------------------
@@ -101,7 +114,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
+    Shader shader("resources/shaders/shader.vs", "resources/shaders/shader.fs");
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
 
     float skyboxVertices[] = {
@@ -176,13 +189,13 @@ int main()
     // -----------
     Model campfireModel(FileSystem::getPath("resources/objects/campfire/Campfire.obj"));
     Model islandModel(FileSystem::getPath("resources/objects/island/KrokotopiaIsland.obj"));
-    Model cottageModel(FileSystem::getPath("resources/objects/cottage/cabin.obj"));
+    Model cabinModel(FileSystem::getPath("resources/objects/cabin/cabin.obj"));
     Model treeModel(FileSystem::getPath("resources/objects/tree/cedar_tree_model.obj"));
 
 
     campfireModel.SetShaderTextureNamePrefix("material.");
     islandModel.SetShaderTextureNamePrefix("material.");
-    cottageModel.SetShaderTextureNamePrefix("material.");
+    cabinModel.SetShaderTextureNamePrefix("material.");
     treeModel.SetShaderTextureNamePrefix("material.");
 
     unsigned int amount = 5;
@@ -196,12 +209,10 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(xs[i], -0.3f, zs[i]));
         float scale = (rand() % 20) / 100.0f + 0.4f;
-        //model = glm::scale(model, glm::vec3(ss[i]));
         model = glm::scale(model, glm::vec3(scale));
-
         modelMatrices[i] = model;
     }
-
+    // set light
     PointLight pointLight;
     pointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
     pointLight.diffuse = glm::vec3(0.6, 0.5, 0.6);
@@ -209,25 +220,25 @@ int main()
     pointLight.constant = 1.0f;
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
-    pointLight.position = glm::vec3(12.2, 2.0, 0.0);
+    pointLight.position = glm::vec3(0.2, 2.0, 0.0);
 
     DirLight dirLight;
     dirLight.ambient = glm::vec3(0.1f);
     dirLight.diffuse = glm::vec3(0.5f);
     dirLight.specular = glm::vec3(0.2f);
     dirLight.direction = normalize(glm::vec3(5.3, -0.7, -0.5));
-/*    for (auto& textures : campfireModel.textures_loaded) {
-        LOG(std::cerr) << textures.path << ' ' << textures.type << '\n';
-    }
-    for (auto& textures : treeModel.textures_loaded) {
-        LOG(std::cerr) << textures.path << ' ' << textures.type << '\n';
-    }
-    for (auto& textures : islandModel.textures_loaded) {
-        LOG(std::cerr) << textures.path << ' ' << textures.type << '\n';
-    }
-*/
-    // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    SpotLight spotLight;
+    spotLight.position = camera.Position;
+    spotLight.direction = camera.Front;
+    spotLight.ambient = glm::vec3(0.0f, 0.0f, 0.0f);
+    spotLight.diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+    spotLight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    spotLight.constant = 1.0f;
+    spotLight.linear = 0.09;
+    spotLight.quadratic = 0.032;
+    spotLight.cutOff = glm::cos(glm::radians(15.5f));
+    spotLight.outerCutOff = glm::cos(glm::radians(23.0f));
 
     // render loop
     // -----------
@@ -252,23 +263,33 @@ int main()
         shader.use();
 
         float time = glfwGetTime();
+
+        shader.setVec3("viewPosition", camera.Position);
+        shader.setFloat("material.shininess", 64.0f);
         
-        shader.setVec3("pointLight.position", pointLight.position);
+        shader.setVec3("lightPosPoint", pointLight.position);
         shader.setVec3("pointLight.ambient", pointLight.ambient);
         shader.setVec3("pointLight.diffuse", pointLight.diffuse);
         shader.setVec3("pointLight.specular", pointLight.specular);
         shader.setFloat("pointLight.constant", pointLight.constant);
         shader.setFloat("pointLight.linear", pointLight.linear);
         shader.setFloat("pointLight.quadratic", pointLight.quadratic);
-        shader.setVec3("viewPosition", camera.Position);
-        shader.setFloat("material.shininess", 64.0f);
-        shader.setVec3("dirLight.direction", dirLight.direction);
+
+        shader.setVec3("lightDir", dirLight.direction);
         shader.setVec3("dirLight.ambient", dirLight.ambient);
         shader.setVec3("dirLight.diffuse", dirLight.diffuse);
         shader.setVec3("dirLight.specular", dirLight.specular);
-        shader.setVec3("spotLight.position", camera.Position);
-        shader.setVec3("spotLight.direction", camera.Front);
 
+        shader.setVec3("lightPosSpot", spotLight.position);
+        shader.setVec3("lightDirSpot", spotLight.direction);
+        shader.setVec3("spotLight.ambient", spotLight.ambient);
+        shader.setVec3("spotLight.diffuse", spotLight.diffuse);
+        shader.setVec3("spotLight.specular", spotLight.specular);
+        shader.setFloat("spotLight.constant", spotLight.constant);
+        shader.setFloat("spotLight.linear", spotLight.linear);
+        shader.setFloat("spotLight.quadratic", spotLight.quadratic);
+        shader.setFloat("spotLight.cutOff", spotLight.cutOff);
+        shader.setFloat("spotLight.outerCutOff", spotLight.outerCutOff);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -277,7 +298,7 @@ int main()
         shader.setMat4("view", view);
 
 
-        // render the loaded model
+        // render the loaded models
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -4.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.5f));
@@ -295,7 +316,7 @@ int main()
         model = glm::scale(model, glm::vec3(0.9f));
         model = glm::rotate(model, glm::radians(-100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setMat4("model", model);
-        cottageModel.Draw(shader);
+        cabinModel.Draw(shader);
         glEnable(GL_CULL_FACE);
 
         for (unsigned int i = 0; i < amount; i++)
@@ -304,8 +325,7 @@ int main()
             treeModel.Draw(shader);
         }
 
-
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        glDepthFunc(GL_LEQUAL);
         skyboxShader.use();
         view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
         skyboxShader.setMat4("view", view);
