@@ -9,9 +9,7 @@ out VS_OUT {
     vec3 FragPos;
     vec2 TexCoords;
     vec3 TangentLightPosPoint;
-    vec3 TangentLightPosSpot;
     vec3 TangentLightDir;
-    vec3 TangentLightDirSpot;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
 } vs_out;
@@ -21,11 +19,8 @@ uniform mat4 view;
 uniform mat4 projection;
 
 uniform vec3 lightPosPoint;
-uniform vec3 lightPosSpot;
 uniform vec3 viewPos;
 uniform vec3 lightDir;
-uniform vec3 lightDirSpot;
-
 
 void main()
 {
@@ -40,9 +35,7 @@ void main()
        mat3 TBN = transpose(mat3(T, B, N));
 
        vs_out.TangentLightPosPoint = normalize(TBN * lightPosPoint);
-       vs_out.TangentLightPosSpot = normalize(TBN * lightPosSpot);
        vs_out.TangentLightDir = normalize(TBN * lightDir);
-       vs_out.TangentLightDirSpot = normalize(TBN * lightDirSpot);
        vs_out.TangentViewPos  = normalize(TBN * viewPos);
        vs_out.TangentFragPos  = normalize(TBN * vs_out.FragPos);
 

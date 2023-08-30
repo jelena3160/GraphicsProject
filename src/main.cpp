@@ -52,21 +52,6 @@ struct DirLight {
     glm::vec3 specular;
 };
 
-struct SpotLight {
-    glm::vec3 position;
-    glm::vec3 direction;
-    float cutOff;
-    float outerCutOff;
-
-    float constant;
-    float linear;
-    float quadratic;
-
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-};
-
 int main()
 {
     // glfw: initialize and configure
@@ -228,17 +213,6 @@ int main()
     dirLight.specular = glm::vec3(0.3f);
     dirLight.direction = glm::vec3(4.2f, -5.0f, -3.3f);
 
-    SpotLight spotLight;
-    spotLight.position = camera.Position;
-    spotLight.direction = camera.Front;
-    spotLight.ambient = glm::vec3(0.0f, 0.0f, 0.0f);
-    spotLight.diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-    spotLight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
-    spotLight.constant = 1.0f;
-    spotLight.linear = 0.09;
-    spotLight.quadratic = 0.032;
-    spotLight.cutOff = glm::cos(glm::radians(12.5f));
-    spotLight.outerCutOff = glm::cos(glm::radians(15.0f));
 
     // render loop
     // -----------
@@ -279,17 +253,7 @@ int main()
         shader.setVec3("dirLight.ambient", dirLight.ambient);
         shader.setVec3("dirLight.diffuse", dirLight.diffuse);
         shader.setVec3("dirLight.specular", dirLight.specular);
-
-        shader.setVec3("lightPosSpot", spotLight.position);
-        shader.setVec3("lightDirSpot", spotLight.direction);
-        shader.setVec3("spotLight.ambient", spotLight.ambient);
-        shader.setVec3("spotLight.diffuse", spotLight.diffuse);
-        shader.setVec3("spotLight.specular", spotLight.specular);
-        shader.setFloat("spotLight.constant", spotLight.constant);
-        shader.setFloat("spotLight.linear", spotLight.linear);
-        shader.setFloat("spotLight.quadratic", spotLight.quadratic);
-        shader.setFloat("spotLight.cutOff", spotLight.cutOff);
-        shader.setFloat("spotLight.outerCutOff", spotLight.outerCutOff);
+        
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
